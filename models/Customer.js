@@ -51,6 +51,14 @@ const customerSchema = new Schema({
   },
 });
 
+// Virtuals
+customerSchema.virtual('fullName').get(function () {
+  return this.firstName + ' ' + this.lastName;
+});
+
+customerSchema.set('toJSON', { virtuals: true });
+customerSchema.set('toObject', { virtuals: true });
+
 const Customer = model('Customer', customerSchema);
 
 module.exports = Customer;

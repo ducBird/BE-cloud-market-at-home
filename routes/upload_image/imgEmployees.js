@@ -45,7 +45,7 @@ router.post('/employees/:id', function (req, res, next) {
       updateDocument(
         employeeId,
         {
-          imageUrl: `/uploads/img/employees/${employeeId}/${req.file.filename}`,
+          avatar: `/uploads/img/employees/${employeeId}/${req.file.filename}`,
         },
         'employees'
       );

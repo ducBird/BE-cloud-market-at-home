@@ -45,7 +45,7 @@ router.post('/customers/:id', function (req, res, next) {
       updateDocument(
         customerId,
         {
-          imageUrl: `/uploads/img/customers/${customerId}/${req.file.filename}`,
+          avatar: `/uploads/img/customers/${customerId}/${req.file.filename}`,
         },
         'customers'
       );

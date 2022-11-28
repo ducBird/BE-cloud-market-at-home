@@ -45,7 +45,7 @@ router.post('/categories/:id', function (req, res, next) {
       updateDocument(
         categoryId,
         {
-          imageUrl: `/uploads/img/categories/${categoryId}/${req.file.filename}`,
+          imageURL: `/uploads/img/categories/${categoryId}/${req.file.filename}`,
         },
         'categories'
       );

@@ -45,7 +45,7 @@ router.post('/products/:id', function (req, res, next) {
       updateDocument(
         productId,
         {
-          imageUrl: `/uploads/img/products/${productId}/${req.file.filename}`,
+          imageProduct: `/uploads/img/products/${productId}/${req.file.filename}`,
         },
         'products'
       );

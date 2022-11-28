@@ -10,10 +10,14 @@ var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
 var categoriesRouter = require('./routes/categories');
 var suppliersRouter = require('./routes/suppliers');
+var employeesRouter = require('./routes/employees');
+var customersRouter = require('./routes/customers');
 
 /* Router Upload Image */
 var uploadImgCategoriesRouter = require('./routes/upload_image/imgCategories');
 var uploadImgProductsRouter = require('./routes/upload_image/imgProducts');
+var uploadImgEmployeesRouter = require('./routes/upload_image/imgEmployees');
+var uploadImgCustomersRouter = require('./routes/upload_image/imgCustomers');
 
 var app = express();
 
@@ -38,10 +42,14 @@ app.use('/users', usersRouter);
 app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
 app.use('/suppliers', suppliersRouter);
+app.use('/employees', employeesRouter);
+app.use('/customers', customersRouter);
 
 /* Router Upload Image */
 app.use('/upload-categories', uploadImgCategoriesRouter);
-app.use('/upload-categories', uploadImgProductsRouter);
+app.use('/upload-products', uploadImgProductsRouter);
+app.use('/upload-employees', uploadImgEmployeesRouter);
+app.use('/upload-customers', uploadImgCustomersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
