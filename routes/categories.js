@@ -1,11 +1,11 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-const { default: mongoose } = require('mongoose');
-const { Category } = require('../models');
+const { default: mongoose } = require("mongoose");
+const { Category } = require("../models");
 
 //MONGOOSE
-mongoose.connect('mongodb://127.0.0.1:27017/cloud-market-AH');
+mongoose.connect("mongodb://127.0.0.1:27017/cloud-market-AH");
 
 //MONGODB
 // const { findDocuments } = require('../helpers/MongoDbHelper');
@@ -13,7 +13,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/cloud-market-AH');
 //============================BEGIN MONGOOSE============================//
 
 /* GET list dataCategories. */
-router.get('/', function (req, res, next) {
+router.get("/", function (req, res, next) {
   try {
     Category.find()
       .sort({ name: 1 })
@@ -28,8 +28,8 @@ router.get('/', function (req, res, next) {
 });
 
 /* GET item at dataCategories. */
-router.get('/:id', function (req, res, next) {
-  if (req.params.id === 'search') {
+router.get("/:id", function (req, res, next) {
+  if (req.params.id === "search") {
     next();
     return;
   }
@@ -47,15 +47,15 @@ router.get('/:id', function (req, res, next) {
 
 /* Search item dataCategories. */
 // router.get('/search/name', function (req, res, next) { hoặc như phía dưới nhưng phải kiểm tra điều kiện ở những url phía trên để tránh trùng lặp url chỗ 'next'
-router.get('/search', function (req, res, next) {
+router.get("/search", function (req, res, next) {
   const { id, name } = req.query;
   console.log(id);
   console.log(name);
-  res.send('OK');
+  res.send("OK");
 });
 
 /* POST insert item at dataCategories. */
-router.post('/', function (req, res, next) {
+router.post("/", function (req, res, next) {
   try {
     const data = req.body;
     const newItem = new Category(data);
@@ -70,7 +70,7 @@ router.post('/', function (req, res, next) {
 });
 
 /* PATCH updated item at dataCategories. */
-router.patch('/:id', (req, res, next) => {
+router.patch("/:id", (req, res, next) => {
   try {
     const { id } = req.params;
     const data = req.body;
@@ -86,7 +86,7 @@ router.patch('/:id', (req, res, next) => {
 });
 
 /* DELETE remove item at dataCategories. */
-router.delete('/:id', function (req, res, next) {
+router.delete("/:id", function (req, res, next) {
   try {
     const { id } = req.params;
     Category.findByIdAndDelete(id).then((result) => {

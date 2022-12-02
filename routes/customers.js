@@ -1,19 +1,19 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-const { default: mongoose } = require('mongoose');
-const { Customer } = require('../models');
+const { default: mongoose } = require("mongoose");
+const { Customer } = require("../models");
 
 //MONGOOSE
-mongoose.connect('mongodb://127.0.0.1:27017/cloud-market-AH');
+mongoose.connect("mongodb://127.0.0.1:27017/cloud-market-AH");
 
 //MONGODB
-const { findDocuments } = require('../helpers/MongoDbHelper');
+const { findDocuments } = require("../helpers/MongoDbHelper");
 
 //============================BEGIN MONGOOSE============================//
 
 /* GET data Customers. */
-router.get('/', function (req, res, next) {
+router.get("/", function (req, res, next) {
   try {
     Customer.find().then((result) => {
       res.send(result);
@@ -25,9 +25,9 @@ router.get('/', function (req, res, next) {
 });
 
 // GET data Customer
-router.get('/:id', function (req, res, next) {
+router.get("/:id", function (req, res, next) {
   const getId = req.params.id;
-  if (getId === 'search') {
+  if (getId === "search") {
     next();
     return;
   }
@@ -47,14 +47,14 @@ router.get('/:id', function (req, res, next) {
 });
 
 // Search Customer
-router.get('/search', (req, res, next) => {
+router.get("/search", (req, res, next) => {
   const { id, firstName, lastName } = req.query;
   console.log(`id: ${id}`);
-  res.send('OK query string');
+  res.send("OK query string");
 });
 
 //Insert Customer
-router.post('/', (req, res, next) => {
+router.post("/", (req, res, next) => {
   try {
     const data = req.body;
     const newItem = new Customer(data);
@@ -69,7 +69,7 @@ router.post('/', (req, res, next) => {
 });
 
 //Update Customer
-router.patch('/:id', (req, res, next) => {
+router.patch("/:id", (req, res, next) => {
   try {
     const id = req.params.id;
     const data = req.body;
@@ -88,7 +88,7 @@ router.patch('/:id', (req, res, next) => {
 });
 
 //Remove Customer
-router.delete('/:id', (req, res, next) => {
+router.delete("/:id", (req, res, next) => {
   try {
     const { id } = req.params;
     Customer.findByIdAndDelete(id).then((result) => {
@@ -112,11 +112,11 @@ router.delete('/:id', (req, res, next) => {
 
 //QUETIONS 4-----------------------------
 //Hiển thị tất cả các khách hàng có địa chỉ ở Quận Hải Châu
-router.get('/questions/4', async (req, res, next) => {
+router.get("/questions/4", async (req, res, next) => {
   try {
-    const text = 'Hải Châu';
+    const text = "Hải Châu";
     let query = { address: new RegExp(`${text}`) };
-    const results = await findDocuments({ query: query }, 'customers');
+    const results = await findDocuments({ query: query }, "customers");
     res.json({ ok: true, results });
   } catch (error) {
     res.status(500).json(error);
@@ -135,12 +135,12 @@ router.get('/questions/4', async (req, res, next) => {
 
 //QUETIONS 5-----------------------------
 //Hiển thị tất cả các khách hàng có năm sinh 1990
-router.get('/questions/5', async (req, res, next) => {
+router.get("/questions/5", async (req, res, next) => {
   try {
     let query = {
-      $expr: { $eq: [{ $year: '$birthDay' }, 2001] },
+      $expr: { $eq: [{ $year: "$birthDay" }, 2001] },
     };
-    const results = await findDocuments({ query: query }, 'customers');
+    const results = await findDocuments({ query: query }, "customers");
     res.json({ ok: true, results });
   } catch (error) {
     res.status(500).json(error);
@@ -149,20 +149,20 @@ router.get('/questions/5', async (req, res, next) => {
 
 //QUETIONS 6-----------------------------
 //Hiển thị tất cả các khách hàng có sinh nhật là hôm nay
-router.get('/questions/6', (req, res, next) => {
+router.get("/questions/6", (req, res, next) => {
   const toDay = new Date();
   const dayBirthDay = {
-    $eq: [{ $dayOfMonth: '$birthDay' }, { $dayOfMonth: toDay }],
+    $eq: [{ $dayOfMonth: "$birthDay" }, { $dayOfMonth: toDay }],
   };
   const monthBirthday = {
-    $eq: [{ $month: '$birthDay' }, { $month: toDay }],
+    $eq: [{ $month: "$birthDay" }, { $month: toDay }],
   };
   let query = {
     $expr: {
       $and: [dayBirthDay, monthBirthday],
     },
   };
-  findDocuments({ query: query }, 'customers')
+  findDocuments({ query: query }, "customers")
     .then((result) => {
       res.json(result);
       return;

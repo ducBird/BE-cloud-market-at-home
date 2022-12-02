@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 // Khai báo thư viện MongoClient
-const { MongoClient, ObjectId } = require('mongodb');
+const { MongoClient, ObjectId } = require("mongodb");
 
 // Chuỗi kết nối đến MongoDB
-const DATABASE_NAME = 'cloud-market-AH';
-const CONNECTION_STRING = 'mongodb://127.0.0.1:27017/' + DATABASE_NAME;
+const DATABASE_NAME = "cloud-market-AH";
+const CONNECTION_STRING = "mongodb://127.0.0.1:27017/" + DATABASE_NAME;
 
 // INSERT: Thêm mới (một)
 function insertDocument(data, collectionName) {
