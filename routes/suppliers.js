@@ -1,11 +1,13 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-const { default: mongoose } = require('mongoose');
-const { Supplier } = require('../models');
+const { default: mongoose } = require("mongoose");
+const { Supplier } = require("../models");
+
+const { CONNECTION_STRING } = require("../constants/connectionDB");
 
 //MONGOOSE
-mongoose.connect('mongodb://127.0.0.1:27017/cloud-market-AH');
+mongoose.connect(CONNECTION_STRING);
 
 //MONGODB
 // const { findDocuments } = require('../helpers/MongoDbHelper');
@@ -13,7 +15,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/cloud-market-AH');
 //============================BEGIN MONGOOSE============================//
 
 /* GET data Suppliers. */
-router.get('/', function (req, res, next) {
+router.get("/", function (req, res, next) {
   try {
     Supplier.find()
       .sort({ name: 1 })
@@ -27,9 +29,9 @@ router.get('/', function (req, res, next) {
 });
 
 // GET data Supplier
-router.get('/:id', function (req, res, next) {
+router.get("/:id", function (req, res, next) {
   const getId = req.params.id;
-  if (getId === 'search') {
+  if (getId === "search") {
     next();
     return;
   }
@@ -49,14 +51,14 @@ router.get('/:id', function (req, res, next) {
 });
 
 // Search Supplier
-router.get('/search', (req, res, next) => {
+router.get("/search", (req, res, next) => {
   const { id, firstName, lastName } = req.query;
   console.log(`id: ${id}`);
-  res.send('OK query string');
+  res.send("OK query string");
 });
 
 //Insert Supplier
-router.post('/', (req, res, next) => {
+router.post("/", (req, res, next) => {
   try {
     const data = req.body;
     const newItem = new Supplier(data);
@@ -71,7 +73,7 @@ router.post('/', (req, res, next) => {
 });
 
 //Update Supplier
-router.patch('/:id', (req, res, next) => {
+router.patch("/:id", (req, res, next) => {
   try {
     const id = req.params.id;
     const data = req.body;
@@ -90,7 +92,7 @@ router.patch('/:id', (req, res, next) => {
 });
 
 //Remove Supplier
-router.delete('/:id', (req, res, next) => {
+router.delete("/:id", (req, res, next) => {
   try {
     const { id } = req.params;
     Supplier.findByIdAndDelete(id).then((result) => {

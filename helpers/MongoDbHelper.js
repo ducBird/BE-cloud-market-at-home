@@ -2,10 +2,13 @@
 // Khai báo thư viện MongoClient
 const { MongoClient, ObjectId } = require("mongodb");
 
-// Chuỗi kết nối đến MongoDB
-const DATABASE_NAME = "cloud-market-AH";
-const CONNECTION_STRING = "mongodb://127.0.0.1:27017/" + DATABASE_NAME;
+// Chuỗi kết nối đến MongoDB local
+// const DATABASE_NAME = "cloud-market-AH";
+// const CONNECTION_STRING = "mongodb://127.0.0.1:27017/" + DATABASE_NAME;
 
+//Chuỗi kết nối đến MongoDB Atlas
+const DATABASE_NAME = "cloud-market-at-home";
+const CONNECTION_STRING = `mongodb+srv://ducBird:ducBird@cmah-cluster.2rqwzwz.mongodb.net/${DATABASE_NAME}`;
 // INSERT: Thêm mới (một)
 function insertDocument(data, collectionName) {
   return new Promise((resolve, reject) => {

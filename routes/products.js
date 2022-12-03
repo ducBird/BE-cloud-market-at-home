@@ -4,8 +4,10 @@ var router = express.Router();
 const { default: mongoose } = require("mongoose");
 const { Product } = require("../models");
 
+const { CONNECTION_STRING } = require("../constants/connectionDB");
+
 //MONGOOSE
-mongoose.connect("mongodb://127.0.0.1:27017/cloud-market-AH");
+mongoose.connect(CONNECTION_STRING);
 
 //MONGODB
 // const { findDocuments } = require('../helpers/MongoDbHelper');

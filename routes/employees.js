@@ -1,19 +1,21 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-const { default: mongoose } = require('mongoose');
-const { Employee } = require('../models');
+const { default: mongoose } = require("mongoose");
+const { Employee } = require("../models");
+
+const { CONNECTION_STRING } = require("../constants/connectionDB");
 
 //MONGOOSE
-mongoose.connect('mongodb://127.0.0.1:27017/cloud-market-AH');
+mongoose.connect(CONNECTION_STRING);
 
 //MONGODB
-const { findDocuments } = require('../helpers/MongoDbHelper');
+const { findDocuments } = require("../helpers/MongoDbHelper");
 
 //============================BEGIN MONGOOSE============================//
 
 /* GET data Employees. */
-router.get('/', function (req, res, next) {
+router.get("/", function (req, res, next) {
   try {
     Employee.find().then((result) => {
       res.send(result);
@@ -25,9 +27,9 @@ router.get('/', function (req, res, next) {
 });
 
 // GET data Employee
-router.get('/:id', function (req, res, next) {
+router.get("/:id", function (req, res, next) {
   const getId = req.params.id;
-  if (getId === 'search') {
+  if (getId === "search") {
     next();
     return;
   }
@@ -47,14 +49,14 @@ router.get('/:id', function (req, res, next) {
 });
 
 // Search Employee
-router.get('/search', (req, res, next) => {
+router.get("/search", (req, res, next) => {
   const { id, firstName, lastName } = req.query;
   console.log(`id: ${id}`);
-  res.send('OK query string');
+  res.send("OK query string");
 });
 
 //Insert Employee
-router.post('/', (req, res, next) => {
+router.post("/", (req, res, next) => {
   try {
     const data = req.body;
     const newItem = new Employee(data);
@@ -69,7 +71,7 @@ router.post('/', (req, res, next) => {
 });
 
 //Update Employee
-router.patch('/:id', (req, res, next) => {
+router.patch("/:id", (req, res, next) => {
   try {
     const id = req.params.id;
     const data = req.body;
@@ -88,7 +90,7 @@ router.patch('/:id', (req, res, next) => {
 });
 
 //Remove Employee
-router.delete('/:id', (req, res, next) => {
+router.delete("/:id", (req, res, next) => {
   try {
     const { id } = req.params;
     Employee.findByIdAndDelete(id).then((result) => {
