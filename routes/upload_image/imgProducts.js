@@ -1,18 +1,18 @@
-const fs = require('fs');
-const express = require('express');
+const fs = require("fs");
+const express = require("express");
 const router = express.Router();
 // MULTER UPLOAD
-const multer = require('multer');
-const { updateDocument } = require('../../helpers/MongoDbHelper');
+const multer = require("multer");
+const { updateDocument } = require("../../helpers/MongoDbHelper");
 
-const UPLOAD_DIRECTORY = './public/uploads/img/products';
+const UPLOAD_DIRECTORY = "./public/uploads/img/products";
 
 var upload = multer({
   storage: multer.diskStorage({
     contentType: multer.AUTO_CONTENT_TYPE,
     destination: function (req, file, callback) {
       const productId = req.params.id;
-      const PATH = UPLOAD_DIRECTORY + '/' + productId;
+      const PATH = UPLOAD_DIRECTORY + "/" + productId;
 
       if (!fs.existsSync(PATH)) {
         // Create a directory
@@ -28,26 +28,26 @@ var upload = multer({
       callback(null, file.originalname);
     },
   }),
-}).single('file');
+}).single("file");
 
 // http://localhost:9000/upload/products/63293fea50d2f78624e0c6f3
-router.post('/products/:id', function (req, res, next) {
-  upload(req, res, function (err) {
+router.post("/products/:id", function (req, res, next) {
+  upload(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
-      res.status(500).json({ type: 'MulterError', err: err });
+      res.status(500).json({ type: "MulterError", err: err });
     } else if (err) {
-      res.status(500).json({ type: 'UnknownError', err: err });
+      res.status(500).json({ type: "UnknownError", err: err });
     } else {
       const productId = req.params.id;
-      console.log('productId:', productId);
+      console.log("productId:", productId);
 
       // MONGODB
-      updateDocument(
+      await updateDocument(
         productId,
         {
           imageProduct: `/uploads/img/products/${productId}/${req.file.filename}`,
         },
-        'products'
+        "products"
       );
       console.log(req.params);
       console.log(req.body);

@@ -10,7 +10,7 @@ const { CONNECTION_STRING } = require("../constants/connectionDB");
 mongoose.connect(CONNECTION_STRING);
 
 //MONGODB
-// const { findDocuments } = require('../helpers/MongoDbHelper');
+const { findDocuments } = require("../helpers/MongoDbHelper");
 
 //============================BEGIN MONGOOSE============================//
 
@@ -34,7 +34,7 @@ router.get("/", function (req, res, next) {
 router.get("/:categoryId", function (req, res, next) {
   console.log(req.params);
   const categoryId = req.params.categoryId;
-  if (categoryId === "search") {
+  if (categoryId === "search" || categoryId === "questions") {
     next();
     return;
   }
@@ -53,7 +53,6 @@ router.get("/:categoryId", function (req, res, next) {
 // GET data Product
 router.get("/:categoryId/:id", function (req, res, next) {
   const getId = req.params.id;
-
   try {
     const id = req.params.id;
     Product.findById(id).then((result) => {
@@ -131,6 +130,15 @@ router.delete("/:id", (req, res, next) => {
  * import query mongodb
  * const { ...methods } = require('../helpers/MongoDbHelper');
  */
+router.get("/questions", async (req, res, next) => {
+  try {
+    let query = { discount: { $gte: 10 } };
+    const results = await findDocuments({ query: query }, "products");
+    res.json({ ok: true, results });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 
 //============================END MONGODB============================//
 module.exports = router;
