@@ -33,6 +33,29 @@ router.get("/", function (req, res, next) {
   }
 });
 
+/* GET account by Id */
+router.get("/:id", function (req, res, next) {
+  if (
+    req.params.id === "search" ||
+    req.params.id === "users-find" ||
+    req.params.id === "authentication" ||
+    req.params.id === "roles"
+  ) {
+    next();
+    return;
+  }
+  try {
+    const { id } = req.params;
+    Account.findById(id).then((result) => {
+      // console.log(result);
+      res.send(result);
+    });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
 router.post("/", function (req, res, next) {
   try {
     const data = req.body;
@@ -44,6 +67,40 @@ router.post("/", function (req, res, next) {
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
+  }
+});
+
+//Update Account
+router.patch("/:id", (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const data = req.body;
+    Account.findByIdAndUpdate(id, data, {
+      new: true,
+    }).then((result) => {
+      // console.log(result);
+      res.send(result);
+      return;
+    });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+    return;
+  }
+});
+
+//Remove Account
+router.delete("/:id", (req, res, next) => {
+  try {
+    const { id } = req.params;
+    Account.findByIdAndDelete(id).then((result) => {
+      res.send(result);
+      return;
+    });
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+    return;
   }
 });
 
@@ -123,6 +180,7 @@ router.post(
 
     if (found && found.length > 0) {
       const id = found[0]._id.toString();
+      const _id = found[0]._id;
       // login: OK
       // jwt | token grant
       var payload = {
@@ -156,7 +214,7 @@ router.post(
         }
       );
 
-      res.send({ message: "Login success!", token, refreshToken });
+      res.send({ message: "Login success!", token, refreshToken, _id });
       return;
     }
     res.status(401).send({ message: "Login failed!" });
