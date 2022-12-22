@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 // Mongoose Datatypes:
@@ -7,19 +7,19 @@ const { Schema, model } = mongoose;
 // ========================Begin OrderDetail================================
 
 const orderDetailSchema = new Schema({
-  productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+  productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
   quantity: { type: Number, require: true, min: 0 },
 });
 // Virtual with Populate
-orderDetailSchema.virtual('product', {
-  ref: 'Product',
-  localField: 'productId',
-  foreignField: '_id',
+orderDetailSchema.virtual("product", {
+  ref: "Product",
+  localField: "productId",
+  foreignField: "_id",
   justOne: true,
 });
 
-orderDetailSchema.set('toJSON', { virtuals: true });
-orderDetailSchema.set('toObject', { virtuals: true });
+orderDetailSchema.set("toJSON", { virtuals: true });
+orderDetailSchema.set("toObject", { virtuals: true });
 
 // ========================End OrderDetail================================
 
@@ -47,14 +47,14 @@ const orderSchema = new Schema({
   },
   status: {
     type: String,
-    required: [true, 'Status is require'],
-    default: 'WAITING',
+    required: [true, "Status is require"],
+    default: "WAITING",
     validate: {
       validator: (value) => {
         if (
-          value !== 'WAITING' &&
-          value !== 'COMPLETED' &&
-          value !== 'CANCELED'
+          value !== "WAITING" &&
+          value !== "COMPLETED" &&
+          value !== "CANCELED"
         ) {
           return false;
         }
@@ -70,10 +70,10 @@ const orderSchema = new Schema({
   paymentType: {
     type: String,
     required: true,
-    default: 'CASH',
+    default: "CASH",
     validate: {
       validator: (value) => {
-        if (value !== 'CREDIT CARD' && value !== 'CASH') {
+        if (value !== "CREDIT CARD" && value !== "CASH") {
           return false;
         }
         return true;
@@ -81,38 +81,52 @@ const orderSchema = new Schema({
       message: `Payment type: {VALUE} is invalid!`,
     },
   },
+
   customerId: {
     type: Schema.Types.ObjectId,
-    ref: 'Customer',
-    required: true,
+    ref: "Customer",
+    required: false,
   },
+
+  // tên
+  fullName: {
+    type: String,
+    required: false,
+  },
+
+  // số điện thoại
+  phoneNumber: {
+    type: String,
+    required: false,
+  },
+
   employeeId: {
     type: Schema.Types.ObjectId,
-    ref: 'Employee',
-    required: true,
+    ref: "Employee",
+    required: false,
   },
   orderDetails: [orderDetailSchema],
 });
 // Virtual with Populate
-orderSchema.virtual('customer', {
-  ref: 'Customer',
-  localField: 'customerId',
-  foreignField: '_id',
+orderSchema.virtual("customer", {
+  ref: "Customer",
+  localField: "customerId",
+  foreignField: "_id",
   justOne: true,
 });
 
-orderSchema.virtual('employee', {
-  ref: 'Employee',
-  localField: 'employeeId',
-  foreignField: '_id',
+orderSchema.virtual("employee", {
+  ref: "Employee",
+  localField: "employeeId",
+  foreignField: "_id",
   justOne: true,
 });
 
-orderSchema.set('toJSON', { virtuals: true });
-orderSchema.set('toObject', { virtuals: true });
+orderSchema.set("toJSON", { virtuals: true });
+orderSchema.set("toObject", { virtuals: true });
 
 // ========================End Order================================
 
-const Order = model('Order', orderSchema);
+const Order = model("Order", orderSchema);
 
 module.exports = Order;

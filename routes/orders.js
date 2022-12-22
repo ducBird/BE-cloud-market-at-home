@@ -68,6 +68,7 @@ router.get("/search", (req, res, next) => {
 router.post("/", (req, res, next) => {
   try {
     const data = req.body;
+    console.log(data);
     const newItem = new Order(data);
     newItem.save().then((result) => {
       res.send(result);

@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 // Mongoose Datatypes:
 // https://mongoosejs.com/docs/schematypes.html
 const customerSchema = new Schema({
-  firstName: { type: String, required: [true, 'First name is not valid'] },
-  lastName: { type: String, required: [true, 'Last name is require'] },
+  firstName: { type: String, required: [true, "First name is not valid"] },
+  lastName: { type: String, required: [true, "Last name is require"] },
   avatar: String,
   phoneNumber: {
     type: String,
@@ -30,6 +30,7 @@ const customerSchema = new Schema({
       // message: (props) => `{props.value} is not a valid email!`,
     },
   },
+  passWord: { type: String, required: [true, `Address is required`] },
   birthDay: {
     type: Date,
     // validate: {
@@ -46,19 +47,19 @@ const customerSchema = new Schema({
         if (value >= Date.now()) return false;
         return true;
       },
-      message: 'valid date in the format yyyy/dd/mm',
+      message: "valid date in the format yyyy/dd/mm",
     },
   },
 });
 
 // Virtuals
-customerSchema.virtual('fullName').get(function () {
-  return this.firstName + ' ' + this.lastName;
+customerSchema.virtual("fullName").get(function () {
+  return this.firstName + " " + this.lastName;
 });
 
-customerSchema.set('toJSON', { virtuals: true });
-customerSchema.set('toObject', { virtuals: true });
+customerSchema.set("toJSON", { virtuals: true });
+customerSchema.set("toObject", { virtuals: true });
 
-const Customer = model('Customer', customerSchema);
+const Customer = model("Customer", customerSchema);
 
 module.exports = Customer;
