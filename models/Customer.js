@@ -30,7 +30,7 @@ const customerSchema = new Schema({
       // message: (props) => `{props.value} is not a valid email!`,
     },
   },
-  passWord: { type: String, required: [true, `Address is required`] },
+  passWord: { type: String, required: [false, `Address is required`] },
   birthDay: {
     type: Date,
     // validate: {
