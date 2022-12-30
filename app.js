@@ -25,6 +25,7 @@ var suppliersRouter = require("./routes/suppliers");
 var employeesRouter = require("./routes/employees");
 var customersRouter = require("./routes/customers");
 var ordersRouter = require("./routes/orders");
+var guestServicesRouter = require("./routes/guestServices");
 
 /* Router Upload Image */
 var uploadImgCategoriesRouter = require("./routes/upload_image/imgCategories");
@@ -85,6 +86,7 @@ app.use("/suppliers", suppliersRouter);
 app.use("/employees", employeesRouter);
 app.use("/customers", customersRouter);
 app.use("/orders", ordersRouter);
+app.use("/guestServices", guestServicesRouter);
 
 /* Router Upload Image */
 app.use("/upload-categories", uploadImgCategoriesRouter);
