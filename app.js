@@ -26,12 +26,13 @@ var employeesRouter = require("./routes/employees");
 var customersRouter = require("./routes/customers");
 var ordersRouter = require("./routes/orders");
 var guestServicesRouter = require("./routes/guestServices");
+var uploadImageRouter = require("./routes/uploadImages");
 
 /* Router Upload Image */
-var uploadImgCategoriesRouter = require("./routes/upload_image/imgCategories");
-var uploadImgProductsRouter = require("./routes/upload_image/imgProducts");
-var uploadImgEmployeesRouter = require("./routes/upload_image/imgEmployees");
-var uploadImgCustomersRouter = require("./routes/upload_image/imgCustomers");
+// var uploadImgCategoriesRouter = require("./routes/upload_image/imgCategories");
+// var uploadImgProductsRouter = require("./routes/upload_image/imgProducts");
+// var uploadImgEmployeesRouter = require("./routes/upload_image/imgEmployees");
+// var uploadImgCustomersRouter = require("./routes/upload_image/imgCustomers");
 
 var app = express();
 
@@ -89,10 +90,11 @@ app.use("/orders", ordersRouter);
 app.use("/guestServices", guestServicesRouter);
 
 /* Router Upload Image */
-app.use("/upload-categories", uploadImgCategoriesRouter);
-app.use("/upload-products", uploadImgProductsRouter);
-app.use("/upload-employees", uploadImgEmployeesRouter);
-app.use("/upload-customers", uploadImgCustomersRouter);
+app.use("/upload-image", uploadImageRouter);
+// app.use("/upload-categories", uploadImgCategoriesRouter);
+// app.use("/upload-products", uploadImgProductsRouter);
+// app.use("/upload-employees", uploadImgEmployeesRouter);
+// app.use("/upload-customers", uploadImgCustomersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
