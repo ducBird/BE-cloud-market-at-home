@@ -28,12 +28,6 @@ var ordersRouter = require("./routes/orders");
 var guestServicesRouter = require("./routes/guestServices");
 var uploadImageRouter = require("./routes/uploadImages");
 
-/* Router Upload Image */
-// var uploadImgCategoriesRouter = require("./routes/upload_image/imgCategories");
-// var uploadImgProductsRouter = require("./routes/upload_image/imgProducts");
-// var uploadImgEmployeesRouter = require("./routes/upload_image/imgEmployees");
-// var uploadImgCustomersRouter = require("./routes/upload_image/imgCustomers");
-
 var app = express();
 
 // view engine setup
