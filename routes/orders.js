@@ -12,24 +12,29 @@ mongoose.connect(CONNECTION_STRING);
 
 //MONGODB
 const { findDocuments } = require("../helpers/MongoDbHelper");
+const passport = require("passport");
 
 //============================BEGIN MONGOOSE============================//
 
 /* GET data Orders. */
-router.get("/", function (req, res, next) {
-  try {
-    Order.find()
-      .populate("orderDetails.product")
-      .populate("customer")
-      .populate("employee")
-      .then((result) => {
-        res.send(result);
-      });
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res, next) {
+    try {
+      Order.find()
+        .populate("orderDetails.product")
+        .populate("customer")
+        .populate("employee")
+        .then((result) => {
+          res.send(result);
+        });
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(500);
+    }
   }
-});
+);
 
 // GET data Order
 router.get("/:id", function (req, res, next) {

@@ -12,25 +12,29 @@ const { CONNECTION_STRING } = require("../constants/connectionDB");
 mongoose.connect(CONNECTION_STRING);
 
 //MONGODB
-// const { findDocuments } = require('../helpers/MongoDbHelper');
+const { findDocuments } = require("../helpers/MongoDbHelper");
 const passport = require("passport");
 
 //============================BEGIN MONGOOSE============================//
 
 /* GET list dataCategories. */
-router.get("/", function (req, res, next) {
-  try {
-    Category.find()
-      .sort({ name: 1 })
-      .then((result) => {
-        res.send(result);
-        // console.log(result);
-      });
-  } catch (error) {
-    // console.log(error);
-    res.sendStatus(500);
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res, next) {
+    try {
+      Category.find()
+        .sort({ name: 1 })
+        .then((result) => {
+          res.send(result);
+          // console.log(result);
+        });
+    } catch (error) {
+      // console.log(error);
+      res.sendStatus(500);
+    }
   }
-});
+);
 
 /* GET item at dataCategories. */
 router.get("/:id", function (req, res, next) {

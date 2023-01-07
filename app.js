@@ -57,7 +57,7 @@ passport.use(
   new JwtStrategy(opts, async function (payload, done) {
     const id = payload.sub;
     // console.log(payload);
-    const found = await findDocument(id, "accounts");
+    const found = await findDocument(id, "employees");
     // console.log(found);
     if (found && found.active) {
       //kiểm tra active trong DB true hay false
@@ -85,10 +85,6 @@ app.use("/guestServices", guestServicesRouter);
 
 /* Router Upload Image */
 app.use("/upload-image", uploadImageRouter);
-// app.use("/upload-categories", uploadImgCategoriesRouter);
-// app.use("/upload-products", uploadImgProductsRouter);
-// app.use("/upload-employees", uploadImgEmployeesRouter);
-// app.use("/upload-customers", uploadImgCustomersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

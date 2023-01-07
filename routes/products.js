@@ -11,24 +11,29 @@ mongoose.connect(CONNECTION_STRING);
 
 //MONGODB
 const { findDocuments } = require("../helpers/MongoDbHelper");
+const passport = require("passport");
 
 //============================BEGIN MONGOOSE============================//
 
 /* GET data Products. */
-router.get("/", function (req, res, next) {
-  try {
-    Product.find()
-      .lean({ virtuals: true })
-      .populate("category")
-      .populate("supplier")
-      .then((result) => {
-        res.send(result);
-      });
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res, next) {
+    try {
+      Product.find()
+        .lean({ virtuals: true })
+        .populate("category")
+        .populate("supplier")
+        .then((result) => {
+          res.send(result);
+        });
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(500);
+    }
   }
-});
+);
 
 /* GET data Products by categoryId. */
 router.get("/:categoryId", function (req, res, next) {

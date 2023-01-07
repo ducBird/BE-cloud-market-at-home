@@ -18,17 +18,21 @@ const passport = require("passport");
 //============================BEGIN MONGOOSE============================//
 
 /* GET list dataCategories. */
-router.get("/", function (req, res, next) {
-  try {
-    GuestService.find().then((result) => {
-      res.send(result);
-      // console.log(result);
-    });
-  } catch (error) {
-    // console.log(error);
-    res.sendStatus(500);
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res, next) {
+    try {
+      GuestService.find().then((result) => {
+        res.send(result);
+        // console.log(result);
+      });
+    } catch (error) {
+      // console.log(error);
+      res.sendStatus(500);
+    }
   }
-});
+);
 
 /* GET item at dataCategories. */
 router.get("/:id", function (req, res, next) {

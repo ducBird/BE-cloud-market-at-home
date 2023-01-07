@@ -22,16 +22,20 @@ const { findDocuments, findDocument } = require("../helpers/MongoDbHelper");
 //============================BEGIN MONGOOSE============================//
 
 /* GET data Employees. */
-router.get("/", function (req, res, next) {
-  try {
-    Employee.find().then((result) => {
-      res.send(result);
-    });
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res, next) {
+    try {
+      Employee.find().then((result) => {
+        res.send(result);
+      });
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(500);
+    }
   }
-});
+);
 
 // GET data Employee
 router.get("/:id", function (req, res, next) {
