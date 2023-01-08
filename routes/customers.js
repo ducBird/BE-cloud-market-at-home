@@ -22,20 +22,16 @@ const { findDocuments, findDocument } = require("../helpers/MongoDbHelper");
 //============================BEGIN MONGOOSE============================//
 
 /* GET data Customers. */
-router.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  function (req, res, next) {
-    try {
-      Customer.find().then((result) => {
-        res.send(result);
-      });
-    } catch (error) {
-      console.log(error);
-      res.sendStatus(500);
-    }
+router.get("/", function (req, res, next) {
+  try {
+    Customer.find().then((result) => {
+      res.send(result);
+    });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
   }
-);
+});
 
 // GET data Customer
 router.get("/:id", function (req, res, next) {
@@ -189,6 +185,38 @@ router.post(
     res.status(401).send({ message: "Login failed!" });
   }
 );
+
+router.post("/refresh-token", async (req, res, next) => {
+  const { refreshToken } = req.body;
+  jwt.verify(refreshToken, jwtSettings.SECRET, async (err, decoded) => {
+    if (err) {
+      // return res.sendStatus(406);
+      return res.status(401).json({ message: "refreshToken is invalid" });
+    } else {
+      console.log("🍎 decoded", decoded);
+      const { id } = decoded;
+      const user = await findDocument(id, "customers");
+      if (user && user.active) {
+        const secret = jwtSettings.SECRET;
+
+        const payload = {
+          message: "payload",
+        };
+
+        const token = jwt.sign(payload, secret, {
+          expiresIn: 86400, //24 * 60 * 60, // expires in 24 hours (24 x 60 x 60)
+          audience: jwtSettings.AUDIENCE,
+          issuer: jwtSettings.ISSUER,
+          subject: id, // Thường dùng để kiểm tra JWT lần sau
+          algorithm: "HS512",
+        });
+
+        return res.json({ token });
+      }
+      return res.sendStatus(401);
+    }
+  });
+});
 
 router.get(
   "/authentication",

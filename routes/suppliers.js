@@ -16,22 +16,18 @@ const passport = require("passport");
 //============================BEGIN MONGOOSE============================//
 
 /* GET data Suppliers. */
-router.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  function (req, res, next) {
-    try {
-      Supplier.find()
-        .sort({ name: 1 })
-        .then((result) => {
-          res.send(result);
-        });
-    } catch (error) {
-      console.log(error);
-      res.sendStatus(500);
-    }
+router.get("/", function (req, res, next) {
+  try {
+    Supplier.find()
+      .sort({ name: 1 })
+      .then((result) => {
+        res.send(result);
+      });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
   }
-);
+});
 
 // GET data Supplier
 router.get("/:id", function (req, res, next) {

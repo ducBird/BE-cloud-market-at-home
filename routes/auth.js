@@ -19,23 +19,19 @@ const jwtSettings = require("../constants/jwtSettings");
 const { findDocuments, findDocument } = require("../helpers/MongoDbHelper");
 
 /* GET list data account. */
-router.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  function (req, res, next) {
-    try {
-      Account.find()
-        .sort({ name: 1 })
-        .then((result) => {
-          res.send(result);
-          // console.log(result);
-        });
-    } catch (error) {
-      // console.log(error);
-      res.sendStatus(500);
-    }
+router.get("/", function (req, res, next) {
+  try {
+    Account.find()
+      .sort({ name: 1 })
+      .then((result) => {
+        res.send(result);
+        // console.log(result);
+      });
+  } catch (error) {
+    // console.log(error);
+    res.sendStatus(500);
   }
-);
+});
 
 /* GET account by Id */
 router.get("/:id", function (req, res, next) {
