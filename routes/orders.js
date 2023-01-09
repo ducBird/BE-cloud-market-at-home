@@ -291,6 +291,23 @@ router.get("/questions/13", function (req, res, next) {
     });
 });
 
+//Hiển thị tất cả các đơn hàng trùng với số điện thoại vừa nhập
+router.post("/lich-su-don-hang", function (req, res, next) {
+  let { phoneNumber } = req.body;
+  let query = {
+    phoneNumber: { $eq: phoneNumber },
+  };
+  Order.find(query)
+    .populate("orderDetails.product")
+    .then((result) => {
+      res.json(result);
+      return;
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+      return;
+    });
+});
 //============================END MONGODB============================//
 
 module.exports = router;
