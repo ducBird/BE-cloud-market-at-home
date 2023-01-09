@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 const { default: mongoose } = require("mongoose");
-const { Category } = require("../models");
+const { GuestService } = require("../models");
 
 //MONGOOSE
 // mongoose.connect("mongodb://127.0.0.1:27017/cloud-market-AH");
@@ -12,7 +12,7 @@ const { CONNECTION_STRING } = require("../constants/connectionDB");
 mongoose.connect(CONNECTION_STRING);
 
 //MONGODB
-const { findDocuments } = require("../helpers/MongoDbHelper");
+// const { findDocuments } = require('../helpers/MongoDbHelper');
 const passport = require("passport");
 
 //============================BEGIN MONGOOSE============================//
@@ -20,12 +20,10 @@ const passport = require("passport");
 /* GET list dataCategories. */
 router.get("/", function (req, res, next) {
   try {
-    Category.find()
-      .sort({ name: 1 })
-      .then((result) => {
-        res.send(result);
-        // console.log(result);
-      });
+    GuestService.find().then((result) => {
+      res.send(result);
+      // console.log(result);
+    });
   } catch (error) {
     // console.log(error);
     res.sendStatus(500);
@@ -40,7 +38,7 @@ router.get("/:id", function (req, res, next) {
   }
   try {
     const { id } = req.params;
-    Category.findById(id).then((result) => {
+    GuestService.findById(id).then((result) => {
       // console.log(result);
       res.send(result);
     });
@@ -63,7 +61,7 @@ router.get("/search", function (req, res, next) {
 router.post("/", function (req, res, next) {
   try {
     const data = req.body;
-    const newItem = new Category(data);
+    const newItem = new GuestService(data);
     newItem.save().then((result) => {
       // console.log(result);
       res.send(result);
@@ -79,7 +77,7 @@ router.patch("/:id", (req, res, next) => {
   try {
     const { id } = req.params;
     const data = req.body;
-    Category.findByIdAndUpdate(id, data, {
+    GuestService.findByIdAndUpdate(id, data, {
       new: true,
     }).then((result) => {
       res.send(result);
@@ -94,7 +92,7 @@ router.patch("/:id", (req, res, next) => {
 router.delete("/:id", function (req, res, next) {
   try {
     const { id } = req.params;
-    Category.findByIdAndDelete(id).then((result) => {
+    GuestService.findByIdAndDelete(id).then((result) => {
       // console.log(result);
       res.send(result);
     });

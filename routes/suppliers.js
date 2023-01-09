@@ -10,7 +10,8 @@ const { CONNECTION_STRING } = require("../constants/connectionDB");
 mongoose.connect(CONNECTION_STRING);
 
 //MONGODB
-// const { findDocuments } = require('../helpers/MongoDbHelper');
+const { findDocuments } = require("../helpers/MongoDbHelper");
+const passport = require("passport");
 
 //============================BEGIN MONGOOSE============================//
 

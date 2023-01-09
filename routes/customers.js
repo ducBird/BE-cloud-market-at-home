@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
+const yup = require("yup");
 
+const { validateSchema } = require("../schemas");
 const { default: mongoose } = require("mongoose");
 const { Customer } = require("../models");
 
@@ -9,8 +11,13 @@ const { CONNECTION_STRING } = require("../constants/connectionDB");
 //MONGOOSE
 mongoose.connect(CONNECTION_STRING);
 
+//JWT
+var passport = require("passport");
+var jwt = require("jsonwebtoken");
+const jwtSettings = require("../constants/jwtSettings");
+
 //MONGODB
-const { findDocuments } = require("../helpers/MongoDbHelper");
+const { findDocuments, findDocument } = require("../helpers/MongoDbHelper");
 
 //============================BEGIN MONGOOSE============================//
 
@@ -29,7 +36,7 @@ router.get("/", function (req, res, next) {
 // GET data Customer
 router.get("/:id", function (req, res, next) {
   const getId = req.params.id;
-  if (getId === "search") {
+  if (getId === "search" || getId === "authentication" || getId === "roles") {
     next();
     return;
   }
@@ -103,6 +110,121 @@ router.delete("/:id", (req, res, next) => {
     return;
   }
 });
+
+// LOGIN VALIDATE | TEST LOGIN WITH BODY  ---------- //
+const loginSchema = yup.object({
+  body: yup.object({
+    email: yup.string().email().required(),
+    password: yup.string().required(() => {
+      return "Lỗi ....";
+    }),
+  }),
+});
+
+// TEST LOGIN WITH JWT ---------- //
+router.post(
+  "/login-jwt",
+  validateSchema(loginSchema),
+  async (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    console.log("* email: ", email);
+    console.log("* password: ", password);
+
+    const found = await findDocuments(
+      {
+        query: {
+          email: email,
+          password: password,
+        },
+      },
+      "customers"
+    );
+    console.log(found);
+
+    if (found && found.length > 0) {
+      const id = found[0]._id.toString();
+      const _id = found[0]._id;
+      // login: OK
+      // jwt | token grant
+      var payload = {
+        // thông tin trong biến này sẽ được in khi cấp token
+        user: {
+          email: email,
+          fullName: "End User",
+        },
+        application: "ecommerce",
+        message: "payload",
+      };
+
+      var secret = jwtSettings.SECRET;
+
+      var token = jwt.sign(payload, secret, {
+        expiresIn: 86400, // expires in 24 hours (24 x 60 x 60)
+        audience: jwtSettings.AUDIENCE,
+        issuer: jwtSettings.ISSUER,
+        subject: id, // Thường dùng để kiểm tra JWT lần sau
+        algorithm: "HS512",
+      });
+
+      // REFRESH TOKEN
+      const refreshToken = jwt.sign(
+        {
+          id,
+        },
+        secret,
+        {
+          expiresIn: "365d", // expires in 24 hours (24 x 60 x 60) //key word 'expiresIn day string jwt'
+        }
+      );
+
+      res.send({ message: "Login success!", token, refreshToken, _id });
+      return;
+    }
+    res.status(401).send({ message: "Login failed!" });
+  }
+);
+
+router.post("/refresh-token", async (req, res, next) => {
+  const { refreshToken } = req.body;
+  jwt.verify(refreshToken, jwtSettings.SECRET, async (err, decoded) => {
+    if (err) {
+      // return res.sendStatus(406);
+      return res.status(401).json({ message: "refreshToken is invalid" });
+    } else {
+      console.log("🍎 decoded", decoded);
+      const { id } = decoded;
+      const user = await findDocument(id, "customers");
+      if (user && user.active) {
+        const secret = jwtSettings.SECRET;
+
+        const payload = {
+          message: "payload",
+        };
+
+        const token = jwt.sign(payload, secret, {
+          expiresIn: 86400, //24 * 60 * 60, // expires in 24 hours (24 x 60 x 60)
+          audience: jwtSettings.AUDIENCE,
+          issuer: jwtSettings.ISSUER,
+          subject: id, // Thường dùng để kiểm tra JWT lần sau
+          algorithm: "HS512",
+        });
+
+        return res.json({ token });
+      }
+      return res.sendStatus(401);
+    }
+  });
+});
+
+router.get(
+  "/authentication",
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => {
+    res.send("Authentication OK");
+  }
+);
 
 //============================END MONGOOSE============================//
 

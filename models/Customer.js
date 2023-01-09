@@ -30,7 +30,7 @@ const customerSchema = new Schema({
       // message: (props) => `{props.value} is not a valid email!`,
     },
   },
-  passWord: { type: String, required: [false, `Address is required`] },
+  password: { type: String },
   birthDay: {
     type: Date,
     // validate: {
@@ -50,6 +50,8 @@ const customerSchema = new Schema({
       message: "valid date in the format yyyy/dd/mm",
     },
   },
+  active: { type: Boolean, default: true },
+  roles: { type: [], default: ["customer"] },
 });
 
 // Virtuals

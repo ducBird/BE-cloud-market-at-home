@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 // Mongoose Datatypes:
 // https://mongoosejs.com/docs/schematypes.html
 const employeeSchema = new Schema({
-  firstName: { type: String, required: [true, 'First name is not valid'] },
-  lastName: { type: String, required: [true, 'Last name is require'] },
+  firstName: { type: String, required: [true, "First name is not valid"] },
+  lastName: { type: String, required: [true, "Last name is require"] },
   avatar: String,
   phoneNumber: {
     type: String,
@@ -20,7 +20,7 @@ const employeeSchema = new Schema({
   address: { type: String, required: [true, `Address is required`] },
   email: {
     type: String,
-    required: [true, 'Email is required'],
+    required: [true, "Email is required"],
     validate: {
       validator: function (value) {
         const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
@@ -30,6 +30,7 @@ const employeeSchema = new Schema({
       // message: (props) => `{props.value} is not a valid email!`,
     },
   },
+  password: { type: String },
   birthDay: {
     type: Date,
     // validate: {
@@ -46,19 +47,21 @@ const employeeSchema = new Schema({
         if (value >= Date.now()) return false;
         return true;
       },
-      message: 'valid date in the format yyyy/dd/mm',
+      message: "valid date in the format yyyy/dd/mm",
     },
   },
+  active: { type: Boolean, default: true },
+  roles: { type: [], default: ["personnel"] },
 });
 
 // Virtuals
-employeeSchema.virtual('fullName').get(function () {
-  return this.firstName + ' ' + this.lastName;
+employeeSchema.virtual("fullName").get(function () {
+  return this.firstName + " " + this.lastName;
 });
 
-employeeSchema.set('toJSON', { virtuals: true });
-employeeSchema.set('toObject', { virtuals: true });
+employeeSchema.set("toJSON", { virtuals: true });
+employeeSchema.set("toObject", { virtuals: true });
 
-const Employee = model('Employee', employeeSchema);
+const Employee = model("Employee", employeeSchema);
 
 module.exports = Employee;
