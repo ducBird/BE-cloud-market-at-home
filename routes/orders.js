@@ -4,6 +4,7 @@ var moment = require("moment");
 
 const { default: mongoose } = require("mongoose");
 const { Order } = require("../models");
+const { Product } = require("../models");
 
 const { CONNECTION_STRING } = require("../constants/connectionDB");
 
@@ -69,9 +70,22 @@ router.get("/search", (req, res, next) => {
 router.post("/", (req, res, next) => {
   try {
     const data = req.body;
-    console.log(data);
+    //console.log(data.orderDetails);
     const newItem = new Order(data);
     newItem.save().then((result) => {
+      // xử lý cập nhật số lượng khi đặt hàng thành công
+      data.orderDetails.forEach((item) => {
+        Product.findByIdAndUpdate(
+          item.productId,
+          { $inc: { stock: -item.quantity } },
+          {
+            new: true,
+          }
+        ).then((result) => {
+          //console.log(result);
+          return;
+        });
+      });
       res.send(result);
       return;
     });
@@ -89,8 +103,8 @@ router.patch("/:id", (req, res, next) => {
     Order.findByIdAndUpdate(id, data, {
       new: true,
     }).then((result) => {
-      // console.log(result);
       res.send(result);
+      console.log(result);
       return;
     });
   } catch (error) {
@@ -277,7 +291,7 @@ router.get("/questions/12", function (req, res, next) {
 //QUETIONS 13-----------------------------
 //Hiển thị tất cả các đơn hàng có địa chỉ giao hàng là Hà Nội
 router.get("/questions/13", function (req, res, next) {
-  const orderAddress = "Hà Nội";
+  const orderAddress = "Quảng Nam";
   let query = {
     shippingAddress: { $eq: orderAddress },
   };

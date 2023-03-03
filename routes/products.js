@@ -69,11 +69,11 @@ router.get("/:categoryId/:id", function (req, res, next) {
 });
 
 // Search Product
-router.get("/search", (req, res, next) => {
-  const { id, firstName, lastName } = req.query;
-  console.log(`id: ${id}`);
-  res.send("OK query string");
-});
+// router.get("/search", (req, res, next) => {
+//   const { id, firstName, lastName } = req.query;
+//   console.log(`id: ${id}`);
+//   res.send("OK query string");
+// });
 
 //Insert Product
 router.post("/", (req, res, next) => {
@@ -136,6 +136,18 @@ router.get("/questions", async (req, res, next) => {
     let query = { discount: { $gte: 10 } };
     const results = await findDocuments({ query: query }, "products");
     res.json({ ok: true, results });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.post("/tim-kiem-san-pham", async (req, res, next) => {
+  try {
+    let { name } = req.body;
+    console.log(name);
+    let query = { name: new RegExp(`${name}`, "i") };
+    const results = await Product.find(query);
+    res.json(results);
   } catch (error) {
     res.status(500).json(error);
   }
