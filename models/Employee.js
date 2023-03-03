@@ -6,7 +6,10 @@ const { Schema, model } = mongoose;
 const employeeSchema = new Schema({
   firstName: { type: String, required: [true, "First name is not valid"] },
   lastName: { type: String, required: [true, "Last name is require"] },
-  avatar: String,
+  avatar: {
+    type: String,
+    default: "/uploads/img/customers/customer_feedback.png",
+  },
   phoneNumber: {
     type: String,
     validate: {
@@ -51,7 +54,7 @@ const employeeSchema = new Schema({
     },
   },
   active: { type: Boolean, default: true },
-  roles: { type: [], default: ["personnel"] },
+  roles: { type: [], default: ["sales"] },
 });
 
 // Virtuals

@@ -48,13 +48,16 @@ const orderSchema = new Schema({
   status: {
     type: String,
     required: [true, "Status is require"],
-    default: "WAITING",
+    default: "WAITING CONFIRMATION ORDER",
     validate: {
       validator: (value) => {
         if (
-          value !== "WAITING" &&
-          value !== "COMPLETED" &&
-          value !== "CANCELED"
+          value !== "WAITING CONFIRMATION ORDER" &&
+          value !== "WAITING PICKUP ORDER" &&
+          value !== "SHIPPING CONFIRMATION" &&
+          value !== "DELIVERY IN PROGESS" &&
+          value !== "DELIVERY SUCCESS" &&
+          value !== "CANCELED ORDER"
         ) {
           return false;
         }
@@ -76,7 +79,7 @@ const orderSchema = new Schema({
     default: "CASH",
     validate: {
       validator: (value) => {
-        if (value !== "CREDIT CARD" && value !== "CASH") {
+        if (value !== "MOMO" && value !== "CASH") {
           return false;
         }
         return true;

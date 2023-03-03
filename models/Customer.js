@@ -6,7 +6,10 @@ const { Schema, model } = mongoose;
 const customerSchema = new Schema({
   firstName: { type: String, required: [true, "First name is not valid"] },
   lastName: { type: String, required: [true, "Last name is require"] },
-  avatar: String,
+  avatar: {
+    type: String,
+    default: "/uploads/img/customers/customer_feedback.png",
+  },
   phoneNumber: {
     type: String,
     validate: {
@@ -17,10 +20,10 @@ const customerSchema = new Schema({
       message: `{VALUE} is not a valid phone number Vietnamese`,
     },
   },
-  address: { type: String, required: [true, `Address is required`] },
+  address: { type: String },
   email: {
     type: String,
-    required: true,
+    required: [true, `Email is required`],
     validate: {
       validator: function (value) {
         const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
@@ -29,8 +32,10 @@ const customerSchema = new Schema({
       message: `{VALUE} is not a valid email`,
       // message: (props) => `{props.value} is not a valid email!`,
     },
+    unique: true,
   },
   password: { type: String },
+  googleId: { type: String },
   birthDay: {
     type: Date,
     // validate: {
@@ -50,6 +55,7 @@ const customerSchema = new Schema({
       message: "valid date in the format yyyy/dd/mm",
     },
   },
+  accountType: { type: String, default: "email" },
   active: { type: Boolean, default: true },
   roles: { type: [], default: ["customer"] },
 });

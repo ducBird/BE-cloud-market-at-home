@@ -36,7 +36,12 @@ router.get("/", function (req, res, next) {
 // GET data Customer
 router.get("/:id", function (req, res, next) {
   const getId = req.params.id;
-  if (getId === "search" || getId === "authentication" || getId === "roles") {
+  if (
+    getId === "search" ||
+    getId === "authentication" ||
+    getId === "roles" ||
+    getId === "logout"
+  ) {
     next();
     return;
   }
@@ -62,10 +67,55 @@ router.get("/search", (req, res, next) => {
   res.send("OK query string");
 });
 
+//google auth
+router.get("/login/failed", (req, res) => {
+  res.status(401).json({
+    success: false,
+    message: "Login failure",
+  });
+});
+router.get("/login/success", (req, res) => {
+  if (req.user) {
+    res.status(200).json({
+      success: true,
+      message: "Login successfull",
+      user: req.user,
+      cookie: req.cookies,
+    });
+  }
+});
+router.get("/logout", (req, res) => {
+  // req.logout();
+  res.clearCookie("session_google_account");
+  res.redirect("http://localhost:3000");
+});
+
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    successRedirect: "http://localhost:3000/",
+    failureRedirect: "/login/failed",
+  })
+);
+
 //Insert Customer
-router.post("/", (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     const data = req.body;
+    //check whether this current user exists in our database
+    const user = await Customer.findOne({
+      email: data.email,
+    });
+    if (user) {
+      res.status(406).send({ msg: "Tài khoản email đã tồn tại!" });
+      return;
+    }
+    // create a new customer
     const newItem = new Customer(data);
     newItem.save().then((result) => {
       res.send(result);

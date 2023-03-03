@@ -4,10 +4,16 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
+const { Customer } = require("./models");
+
+//cookie-sesion
+const cookieSession = require("cookie-session");
 
 // Import JWT vs Passport
 const passport = require("passport");
 const { findDocument } = require("./helpers/MongoDbHelper");
+
+var GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 // var BasicStrategy = require('passport-http').BasicStrategy;
 
@@ -40,11 +46,73 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+//use cookie-session
 app.use(
-  cors({
-    origin: "*",
+  cookieSession({
+    name: "session_google_account",
+    keys: ["lama"],
+    maxAge: 24 * 60 * 60 * 100,
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
+//----------------------------------------------------------------
+
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+    ],
+    // origin: "*",
+    methods: "GET,POST,PATCH,DELETE,PUT",
+    credentials: true,
+  })
+);
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID:
+        "673027771527-khufvhsu35vh1kqve8e9g6ce0os00tll.apps.googleusercontent.com",
+      clientSecret: "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",
+      callbackURL: "/customers/auth/google/callback",
+    },
+    async function (accessToken, refreshToken, profile, done) {
+      console.log("access token ", accessToken);
+      console.log("refresh token ", refreshToken);
+      console.log("profile", profile);
+
+      //check whether this current user exists in our database
+      const user = await Customer.findOne({
+        googleId: profile.id,
+        accountType: "google",
+      });
+      if (user) return done(null, user);
+      //else create a new user
+      const googleAccount = {
+        firstName: profile.name.familyName,
+        lastName: profile.name.givenName,
+        email: profile.emails[0].value,
+        googleId: profile.id,
+        avatar: profile.photos[0].value,
+        accountType: profile.provider,
+      };
+      const accountCustomer = new Customer(googleAccount);
+      accountCustomer.save().then((user) => done(null, user));
+    }
+  )
+);
+// use cookie-session
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+//----------------------------------------------------------------
 
 // Passport: jwt
 const opts = {};
