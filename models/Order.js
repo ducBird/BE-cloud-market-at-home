@@ -52,16 +52,19 @@ const orderSchema = new Schema({
     validate: {
       validator: (value) => {
         if (
-          value !== "WAITING CONFIRMATION ORDER" &&
-          value !== "WAITING PICKUP ORDER" &&
-          value !== "SHIPPING CONFIRMATION" &&
-          value !== "DELIVERY IN PROGESS" &&
-          value !== "DELIVERY SUCCESS" &&
-          value !== "CANCELED ORDER"
+          [
+            "WAITING CONFIRMATION ORDER",
+            "CONFIRMED ORDER",
+            "SHIPPING CONFIRMATION",
+            "DELIVERY IN PROGRESS",
+            "DELIVERY SUCCESS",
+            "RECEIVED ORDER",
+            "CANCELED ORDER",
+          ].includes(value)
         ) {
-          return false;
+          return true;
         }
-        return true;
+        return false;
       },
       message: `Status: {VALUE} is invalid!`,
     },
@@ -79,13 +82,17 @@ const orderSchema = new Schema({
     default: "CASH",
     validate: {
       validator: (value) => {
-        if (value !== "MOMO" && value !== "CASH") {
-          return false;
+        if (["CASH", "MOMO"].includes(value.toUpperCase())) {
+          return true;
         }
-        return true;
+        return false;
       },
       message: `Payment type: {VALUE} is invalid!`,
     },
+  },
+
+  imageConfirm: {
+    type: String,
   },
 
   customerId: {

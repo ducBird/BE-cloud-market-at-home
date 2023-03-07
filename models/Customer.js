@@ -32,7 +32,7 @@ const customerSchema = new Schema({
       message: `{VALUE} is not a valid email`,
       // message: (props) => `{props.value} is not a valid email!`,
     },
-    unique: true,
+    unique: [true, "email đã tồn tại"],
   },
   password: { type: String },
   googleId: { type: String },

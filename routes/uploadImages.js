@@ -36,64 +36,72 @@ var upload = multer({
 //http://localhost:9000/upload/products/63654be2cda9a0009835fdb5
 //sửa lại bất kì products thành collection nào
 router.post("/:collectionName/:id", function (req, res, next) {
-  if (req.body.file !== undefined) {
-    // Kiểm tra xem values gửi về có kèm file ảnh hay không
-    upload(req, res, async function (err) {
-      if (err instanceof multer.MulterError) {
-        res.status(500).json({ type: "MulterError", err: err });
-      } else if (err) {
-        res.status(500).json({ type: "UnknownError", err: err });
-      } else {
-        const { collectionName, id } = req.params;
+  // if (req.body.file !== undefined) {
+  // Kiểm tra xem values gửi về có kèm file ảnh hay không
+  upload(req, res, async function (err) {
+    if (err instanceof multer.MulterError) {
+      res.status(500).json({ type: "MulterError", err: err });
+    } else if (err) {
+      res.status(500).json({ type: "UnknownError", err: err });
+    } else {
+      const { collectionName, id } = req.params;
+      console.log("req.body", req.body);
 
-        console.log("req.body", req.body);
-
-        // UPDATE MONGODB
-        if (collectionName === "categories") {
-          await updateDocument(
-            id,
-            {
-              imageURL: `/uploads/img/${collectionName}/${id}/${req.file.filename}`,
-            },
-            collectionName
-          );
-        }
-        if (collectionName === "products") {
-          await updateDocument(
-            id,
-            {
-              imageProduct: `/uploads/img/${collectionName}/${id}/${req.file.filename}`,
-            },
-            collectionName
-          );
-        }
-        if (collectionName === "customers") {
-          await updateDocument(
-            id,
-            {
-              avatar: `/uploads/img/${collectionName}/${id}/${req.file.filename}`,
-            },
-            collectionName
-          );
-        }
-        if (collectionName === "employees") {
-          await updateDocument(
-            id,
-            {
-              avatar: `/uploads/img/${collectionName}/${id}/${req.file.filename}`,
-            },
-            collectionName
-          );
-        }
-        //
-        // console.log('host', req.get('host'));
-        const publicUrl = `${req.protocol}://${req.get(
-          "host"
-        )}/uploads/img/${collectionName}/${id}/${req.file.filename}`;
-        res.status(200).json({ ok: true, publicUrl: publicUrl });
+      // UPDATE MONGODB
+      if (collectionName === "categories") {
+        await updateDocument(
+          id,
+          {
+            imageURL: `/uploads/img/${collectionName}/${id}/${req.file.filename}`,
+          },
+          collectionName
+        );
       }
-    });
-  }
+      if (collectionName === "products") {
+        await updateDocument(
+          id,
+          {
+            imageProduct: `/uploads/img/${collectionName}/${id}/${req.file.filename}`,
+          },
+          collectionName
+        );
+      }
+      if (collectionName === "customers") {
+        await updateDocument(
+          id,
+          {
+            avatar: `/uploads/img/${collectionName}/${id}/${req.file.filename}`,
+          },
+          collectionName
+        );
+      }
+      if (collectionName === "employees") {
+        await updateDocument(
+          id,
+          {
+            avatar: `/uploads/img/${collectionName}/${id}/${req.file.filename}`,
+          },
+          collectionName
+        );
+      }
+      if (collectionName === "orders") {
+        await updateDocument(
+          id,
+          {
+            imageConfirm: `/uploads/img/${collectionName}/${id}/${req.file.filename}`,
+          },
+          collectionName
+        );
+      }
+      //
+      // console.log('host', req.get('host'));
+      const publicUrl = `${req.protocol}://${req.get(
+        "host"
+      )}/uploads/img/${collectionName}/${id}/${req.file.filename}`;
+      res.status(200).json({ ok: true, publicUrl: publicUrl });
+    }
+  });
+  // }
 });
 
 // upload mootj array anh
