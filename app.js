@@ -67,6 +67,7 @@ app.use(
       "http://localhost:5173",
       "http://127.0.0.1:5173",
       "https://cloud-market-at-home.vercel.app/",
+      "https://management-cloud-market-at-home.vercel.app/",
     ],
     methods: "GET,POST,PATCH,DELETE,PUT",
     credentials: true,
