@@ -224,6 +224,7 @@ function findDocuments(
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
+
       .then((client) => {
         const dbo = client.db(DATABASE_NAME);
         const collection = dbo.collection(collectionName);
@@ -244,6 +245,7 @@ function findDocuments(
         }
 
         cursor
+
           .toArray()
           .then((result) => {
             client.close();

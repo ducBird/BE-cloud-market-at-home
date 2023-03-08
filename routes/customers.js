@@ -284,14 +284,30 @@ router.get(
  * const { ...methods } = require('../helpers/MongoDbHelper');
  */
 
-//QUETIONS 4-----------------------------
-//Hiển thị tất cả các khách hàng có địa chỉ ở Quận Hải Châu
-router.get("/questions/4", async (req, res, next) => {
+//Hiển thị tất cả các khách hàng có địa chỉ trùng với địa chỉ cần tìm
+router.post("/dia-chi-khach-hang", async (req, res, next) => {
   try {
-    const text = "Hải Châu";
-    let query = { address: new RegExp(`${text}`) };
+    let { address, phoneNumber } = req.body;
+    // query address
+    const compareAddress = {
+      address: new RegExp(`${address}`, "i"),
+    };
+    // query phoneNumber
+    const comparePhoneNumber = {
+      $eq: ["$phoneNumber", phoneNumber],
+    };
+    let query = {
+      $expr: {
+        $and: [
+          { address: new RegExp(`${address}`, "i") },
+          { $eq: ["$phoneNumber", phoneNumber] },
+        ],
+      },
+    };
+
     const results = await findDocuments({ query: query }, "customers");
-    res.json({ ok: true, results });
+    //const results = await Customer.find({ $text: { $search: address } });
+    res.json({ results });
   } catch (error) {
     res.status(500).json(error);
   }

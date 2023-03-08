@@ -8,23 +8,22 @@ const mongooseLeanVirtuals = require("mongoose-lean-virtuals");
 // https://mongoosejs.com/docs/schematypes.html
 const productSchema = new Schema(
   {
-    name: { type: String, required: [true, "Name product is require"] },
+    name: { type: String, required: [true, "Tên sản phẩm bắt buộc nhập"] },
     imageProduct: String,
     price: {
       type: Number,
-      required: [true, "Price is require"],
-      min: [0, "Must be at least 0, got {VALUE}"],
+      required: [true, "Giá bắt buộc nhập"],
+      min: [0, "Giá phải lớn hơn 0"],
     },
     discount: {
       type: Number,
-      required: [true, "Discount product is require"],
-      min: 0,
-      max: 100,
+      min: [0, "Giảm giá phải lớn hơn bằng 0"],
+      max: [100, "Giảm giá phải nhỏ hơn bằng 0"],
     },
     stock: {
       type: Number,
-      required: [true, "Stock is required"],
-      min: 0,
+      required: [true, "Tồn kho bắt buộc nhập"],
+      min: [0, "Tồn kho phải lớn hơn bằng 0"],
     },
     dram: {
       type: String,

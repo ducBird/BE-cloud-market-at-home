@@ -4,8 +4,11 @@ const { Schema, model } = mongoose;
 // Mongoose Datatypes:
 // https://mongoosejs.com/docs/schematypes.html
 const employeeSchema = new Schema({
-  firstName: { type: String, required: [true, "First name is not valid"] },
-  lastName: { type: String, required: [true, "Last name is require"] },
+  firstName: {
+    type: String,
+    required: [true, "Họ - Tên đệm bắt buộc phải nhập"],
+  },
+  lastName: { type: String, required: [true, "Tên bắt buộc phải nhập"] },
   avatar: {
     type: String,
     default: "/uploads/img/customers/customer_feedback.png",
@@ -17,19 +20,19 @@ const employeeSchema = new Schema({
         const phoneNumberRegex = /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/;
         return phoneNumberRegex.test(value);
       },
-      message: `{VALUE} is not a valid phone number Vietnamese`,
+      message: `{VALUE} không phải là số điện thoại hợp lệ`,
     },
   },
-  address: { type: String, required: [true, `Address is required`] },
+  address: { type: String, required: [true, "Địa chỉ bắt buộc phải nhập"] },
   email: {
     type: String,
-    required: [true, "Email is required"],
+    required: [true, "Email bắt buộc phải nhập"],
     validate: {
       validator: function (value) {
         const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
         return emailRegex.test(value);
       },
-      message: `{VALUE} is not a valid email`,
+      message: `{VALUE} không phải là email hợp lệ`,
       // message: (props) => `{props.value} is not a valid email!`,
     },
   },
@@ -50,7 +53,7 @@ const employeeSchema = new Schema({
         if (value >= Date.now()) return false;
         return true;
       },
-      message: "valid date in the format yyyy/dd/mm",
+      message: "Ngày hợp lệ ở định dạng yyyy/dd/mm",
     },
   },
   active: { type: Boolean, default: true },

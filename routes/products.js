@@ -17,8 +17,26 @@ const passport = require("passport");
 
 /* GET data Products. */
 router.get("/", function (req, res, next) {
+  const query = {};
   try {
-    Product.find()
+    // Chuyển đổi giá trị sang kiểu số
+    if (req.query.min && req.query.max) {
+      query.price = {
+        $gte: parseInt(req.query.min),
+        $lt: parseInt(req.query.max),
+      };
+    }
+    if (req.query.min && !req.query.max) {
+      query.price = {
+        $gte: parseInt(req.query.min),
+      };
+    }
+    if (!req.query.min && req.query.max) {
+      query.price = {
+        $lt: parseInt(req.query.max),
+      };
+    }
+    Product.find(query)
       .lean({ virtuals: true })
       .populate("category")
       .populate("supplier")
@@ -33,14 +51,32 @@ router.get("/", function (req, res, next) {
 
 /* GET data Products by categoryId. */
 router.get("/:categoryId", function (req, res, next) {
-  console.log(req.params);
   const categoryId = req.params.categoryId;
+  const query = { categoryId };
   if (categoryId === "search" || categoryId === "questions") {
     next();
     return;
   }
+  // Chuyển đổi giá trị sang kiểu số
+  if (req.query.min && req.query.max) {
+    query.price = {
+      $gte: parseInt(req.query.min),
+      $lt: parseInt(req.query.max),
+    };
+  }
+  if (req.query.min && !req.query.max) {
+    query.price = {
+      $gte: parseInt(req.query.min),
+    };
+  }
+  if (!req.query.min && req.query.max) {
+    query.price = {
+      $lt: parseInt(req.query.max),
+    };
+  }
+
   try {
-    Product.find({ categoryId })
+    Product.find(query)
       .lean({ virtuals: true })
       .populate("category")
       .then((result) => {
@@ -131,7 +167,9 @@ router.delete("/:id", (req, res, next) => {
  * import query mongodb
  * const { ...methods } = require('../helpers/MongoDbHelper');
  */
-router.get("/questions", async (req, res, next) => {
+
+// lọc theo giảm giá
+router.post("/giam-gia", async (req, res, next) => {
   try {
     let query = { discount: { $gte: 10 } };
     const results = await findDocuments({ query: query }, "products");
@@ -141,10 +179,10 @@ router.get("/questions", async (req, res, next) => {
   }
 });
 
+// tìm kiếm sản phẩm
 router.post("/tim-kiem-san-pham", async (req, res, next) => {
   try {
     let { name } = req.body;
-    console.log(name);
     let query = { name: new RegExp(`${name}`, "i") };
     const results = await Product.find(query);
     res.json(results);

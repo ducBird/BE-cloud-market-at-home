@@ -4,8 +4,11 @@ const { Schema, model } = mongoose;
 // Mongoose Datatypes:
 // https://mongoosejs.com/docs/schematypes.html
 const customerSchema = new Schema({
-  firstName: { type: String, required: [true, "First name is not valid"] },
-  lastName: { type: String, required: [true, "Last name is require"] },
+  firstName: {
+    type: String,
+    required: [true, "Họ - Tên đệm bắt buộc phải nhập"],
+  },
+  lastName: { type: String, required: [true, "Tên bắt buộc phải nhập"] },
   avatar: {
     type: String,
     default: "/uploads/img/customers/customer_feedback.png",
@@ -14,22 +17,23 @@ const customerSchema = new Schema({
     type: String,
     validate: {
       validator: function (value) {
-        const phoneNumberRegex = /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/;
+        const phoneNumberRegex =
+          /^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/;
         return phoneNumberRegex.test(value);
       },
-      message: `{VALUE} is not a valid phone number Vietnamese`,
+      message: `{VALUE} không phải là số điện thoại hợp lệ`,
     },
   },
-  address: { type: String },
+  address: { type: String, required: [true, "Địa chỉ bắt buộc phải nhập"] },
   email: {
     type: String,
-    required: [true, `Email is required`],
+    required: [true, "Email bắt buộc phải nhập"],
     validate: {
       validator: function (value) {
         const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
         return emailRegex.test(value);
       },
-      message: `{VALUE} is not a valid email`,
+      message: `{VALUE} không phải là email hợp lệ`,
       // message: (props) => `{props.value} is not a valid email!`,
     },
     unique: true,
@@ -52,7 +56,7 @@ const customerSchema = new Schema({
         if (value >= Date.now()) return false;
         return true;
       },
-      message: "valid date in the format yyyy/dd/mm",
+      message: "Ngày hợp lệ ở định dạng yyyy/dd/mm",
     },
   },
   accountType: { type: String, default: "email" },

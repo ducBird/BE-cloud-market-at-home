@@ -28,7 +28,7 @@ orderDetailSchema.set("toObject", { virtuals: true });
 const orderSchema = new Schema({
   createdDate: {
     type: Date,
-    required: true,
+    required: [true, "Ngày tạo hóa đơn bắt buộc phải nhập"],
     default: new Date(),
   },
 
@@ -42,50 +42,77 @@ const orderSchema = new Schema({
         }
         return true;
       },
-      message: `Shipped date: {VALUE} is invalid!`,
+      message: `Ngày vận chuyển: {VALUE} không hợp lệ!`,
     },
   },
   status: {
     type: String,
-    required: [true, "Status is require"],
+    required: [true, "Trạng thái bắt buộc phải nhập"],
     default: "WAITING CONFIRMATION ORDER",
     validate: {
       validator: (value) => {
         if (
-          value !== "WAITING CONFIRMATION ORDER" &&
-          value !== "WAITING PICKUP ORDER" &&
-          value !== "SHIPPING CONFIRMATION" &&
-          value !== "DELIVERY IN PROGESS" &&
-          value !== "DELIVERY SUCCESS" &&
-          value !== "CANCELED ORDER"
+          [
+            "WAITING CONFIRMATION ORDER",
+            "WAITING PICKUP ORDER",
+            "SHIPPING CONFIRMATION",
+            "DELIVERY IN PROGESS",
+            "DELIVERY SUCCESS",
+            "CANCELED ORDER",
+          ].includes(value)
         ) {
-          return false;
+          return true;
         }
-        return true;
+        return false;
       },
-      message: `Status: {VALUE} is invalid!`,
+      message: `Trạng thái: {VALUE} không hợp lệ!`,
     },
+    // validate: {
+    //   validator: (value) => {
+    //     if (
+    //       value !== "WAITING CONFIRMATION ORDER" &&
+    //       value !== "WAITING PICKUP ORDER" &&
+    //       value !== "SHIPPING CONFIRMATION" &&
+    //       value !== "DELIVERY IN PROGESS" &&
+    //       value !== "DELIVERY SUCCESS" &&
+    //       value !== "CANCELED ORDER"
+    //     ) {
+    //       return false;
+    //     }
+    //     return true;
+    //   },
+    //   message: `Trạng thái: {VALUE} không hợp lệ!`,
+    // },
   },
   description: String,
 
   shippingAddress: {
     type: String,
-    required: true,
+    required: [true, "Địa chỉ giao hàng bắt buộc phải nhập"],
   },
 
   paymentType: {
     type: String,
-    required: true,
+    required: [true, "Hình thức thanh toán bắt buộc phải nhập"],
     default: "CASH",
     validate: {
       validator: (value) => {
-        if (value !== "MOMO" && value !== "CASH") {
-          return false;
+        if (["MOMO", "CASH"].includes(value)) {
+          return true;
         }
-        return true;
+        return false;
       },
-      message: `Payment type: {VALUE} is invalid!`,
+      message: `Hình thức thanh toán: {VALUE} không hợp lệ!`,
     },
+    // validate: {
+    //   validator: (value) => {
+    //     if (value !== "MOMO" && value !== "CASH") {
+    //       return false;
+    //     }
+    //     return true;
+    //   },
+    //   message: `Hình thức thanh toán: {VALUE} không hợp lệ!`,
+    // },
   },
 
   customerId: {

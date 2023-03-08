@@ -7,7 +7,7 @@ const { Order } = require("../models");
 const { Product } = require("../models");
 
 const { CONNECTION_STRING } = require("../constants/connectionDB");
-
+var NumberInt = require("mongodb").Int32;
 //MONGOOSE
 mongoose.connect(CONNECTION_STRING);
 
@@ -138,42 +138,12 @@ router.delete("/:id", (req, res, next) => {
  */
 
 //QUETIONS 7-----------------------------
-//Hiển thị tất cả các đơn hàng có trạng thái là COMPLETED
-router.post("/questions/7", function (req, res, next) {
-  let { status } = req.body;
-  const query = {
-    status: status,
-  };
-  // findDocuments({ query: query }, 'orders')
-  //   .then((result) => {
-  //     res.json(result);
-  //     return;
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).json(err);
-  //     return;
-  //   });
-  try {
-    Order.find(query)
-      .populate("orderDetails.product")
-      .populate("customer")
-      .populate("employee")
-      .then((result) => {
-        res.send(result);
-      })
-      .catch((err) => {
-        res.status(400).send({ message: err.message });
-      });
-  } catch (err) {
-    res.sendStatus(500);
-  }
-});
 
 //QUETIONS 8-----------------------------
 //Hiển thị tất cả các đơn hàng có trạng thái là COMPLETED trong ngày hôm nay
-router.get("/questions/8", function (req, res, next) {
+router.post("/questions/8", function (req, res, next) {
   const today = new Date();
-  const orderStatus = "COMPLETED";
+  let { status } = req.body;
   let query = {
     $expr: {
       $and: [
@@ -187,7 +157,7 @@ router.get("/questions/8", function (req, res, next) {
           $eq: [{ $year: "$createdDate" }, { $year: today }],
         },
         {
-          $eq: ["$status", orderStatus],
+          $eq: ["$status", status],
         },
       ],
     },
@@ -228,7 +198,7 @@ router.get("/questions/9", function (req, res, next) {
 //Hiển thị tất cả các đơn hàng có trạng thái là CANCELED trong ngày hôm nay
 router.get("/questions/10", function (req, res, next) {
   const today = new Date();
-  const orderStatus = "CANCELED";
+  const orderStatus = "WAITING";
   let query = {
     $expr: {
       $and: [
@@ -306,8 +276,9 @@ router.get("/questions/13", function (req, res, next) {
     });
 });
 
+// query 1
 //Hiển thị tất cả các đơn hàng trùng với số điện thoại vừa nhập
-router.post("/lich-su-don-hang", function (req, res, next) {
+router.post("/tim-kiem-theo-so-dien-thoai", function (req, res, next) {
   let { phoneNumber } = req.body;
   let query = {
     phoneNumber: { $eq: phoneNumber },
@@ -322,6 +293,113 @@ router.post("/lich-su-don-hang", function (req, res, next) {
       res.status(500).json(err);
       return;
     });
+});
+
+// query 2
+// hiển thị đơn hàng trùng với ngày nhập vào
+// lỗi
+router.post("/tim-don-hang-theo-ngay", function (req, res, next) {
+  let { createdDate } = req.body;
+  const query = {
+    createdDate: createdDate,
+  };
+  try {
+    Order.find(query)
+      .populate("orderDetails.product")
+      .populate("customer")
+      .populate("employee")
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+// query 3
+//Hiển thị tất cả các đơn hàng theo trạng thái
+router.post("/thong-ke-don-hang-theo-trang-thai", function (req, res, next) {
+  let { status } = req.body;
+  const query = {
+    status: status,
+  };
+  // findDocuments({ query: query }, 'orders')
+  //   .then((result) => {
+  //     res.json(result);
+  //     return;
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).json(err);
+  //     return;
+  //   });
+  try {
+    Order.find(query)
+      .populate("orderDetails.product")
+      .populate("customer")
+      .populate("employee")
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+// query 4
+//Hiển thị tất cả các đơn hàng theo trạng thái
+router.post(
+  "/thong-ke-don-hang-theo-hinh-thuc-thanh-toan",
+  function (req, res, next) {
+    let { paymentType } = req.body;
+    const query = {
+      paymentType: paymentType,
+    };
+    try {
+      Order.find(query)
+        .populate("orderDetails.product")
+        .populate("customer")
+        .populate("employee")
+        .then((result) => {
+          res.send(result);
+        })
+        .catch((err) => {
+          res.status(400).send({ message: err.message });
+        });
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  }
+);
+// query 5
+//Hiển thị tất cả các đơn hàng theo giá
+router.post("/thong-ke-don-hang-theo-tong-don-hang", function (req, res, next) {
+  let { totalSearch } = req.body;
+
+  Order.aggregate([
+    { $unwind: { path: "$products" } },
+    { $group: { _id: "$_id", total: { $sum: "$products.price" } } },
+    { $match: { total: { $gte: NumberInt(100000) } } },
+  ]);
+  try {
+    Order.find(query)
+      .populate("orderDetails.product")
+      .populate("customer")
+      .populate("employee")
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
+  }
 });
 //============================END MONGODB============================//
 

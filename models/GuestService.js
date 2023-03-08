@@ -22,7 +22,8 @@ const guestServiceSchema = new Schema({
     type: String,
     validate: {
       validator: function (value) {
-        const phoneNumberRegex = /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/;
+        const phoneNumberRegex =
+          /^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/;
         return phoneNumberRegex.test(value);
       },
       message: `{VALUE} không hợp lệ ở Việt Nam`,
