@@ -42,6 +42,7 @@ const productSchema = new Schema(
     description: {
       type: String,
     },
+    isDelete: { type: Boolean, default: false },
   },
   {
     versionKey: false,

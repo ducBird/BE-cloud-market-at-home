@@ -31,6 +31,7 @@ const guestServiceSchema = new Schema({
   },
   isRequest: Boolean,
   message: String,
+  isDelete: { type: Boolean, default: false },
 });
 
 const GuestService = model("GuestService", guestServiceSchema);

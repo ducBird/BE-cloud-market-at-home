@@ -29,6 +29,7 @@ const supplierSchema = new Schema({
     },
   },
   address: { type: String, required: [true, "Địa chỉ bắt buộc nhập"] },
+  isDelete: { type: Boolean, default: false },
 });
 
 const Supplier = model("Supplier", supplierSchema);

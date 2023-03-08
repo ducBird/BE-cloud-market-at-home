@@ -54,10 +54,11 @@ const orderSchema = new Schema({
         if (
           [
             "WAITING CONFIRMATION ORDER",
-            "WAITING PICKUP ORDER",
+            "CONFIRMED ORDER",
             "SHIPPING CONFIRMATION",
-            "DELIVERY IN PROGESS",
+            "DELIVERY IN PROGRESS",
             "DELIVERY SUCCESS",
+            "RECEIVED ORDER",
             "CANCELED ORDER",
           ].includes(value)
         ) {
@@ -97,7 +98,7 @@ const orderSchema = new Schema({
     default: "CASH",
     validate: {
       validator: (value) => {
-        if (["MOMO", "CASH"].includes(value)) {
+        if (["CASH", "MOMO"].includes(value.toUpperCase())) {
           return true;
         }
         return false;
@@ -113,6 +114,10 @@ const orderSchema = new Schema({
     //   },
     //   message: `Hình thức thanh toán: {VALUE} không hợp lệ!`,
     // },
+  },
+
+  imageConfirm: {
+    type: String,
   },
 
   customerId: {
@@ -139,6 +144,7 @@ const orderSchema = new Schema({
     required: false,
   },
   orderDetails: [orderDetailSchema],
+  isDelete: { type: Boolean, default: false },
 });
 // Virtual with Populate
 orderSchema.virtual("customer", {

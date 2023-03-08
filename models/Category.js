@@ -7,6 +7,7 @@ const categorySchema = new Schema({
   name: { type: String, required: [true, "Name bắt buộc phải nhập"] },
   imageURL: String,
   description: String,
+  isDelete: { type: Boolean, default: false },
 });
 
 const Category = model("Category", categorySchema);

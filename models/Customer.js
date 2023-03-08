@@ -36,7 +36,7 @@ const customerSchema = new Schema({
       message: `{VALUE} không phải là email hợp lệ`,
       // message: (props) => `{props.value} is not a valid email!`,
     },
-    unique: true,
+    unique: [true, "email đã tồn tại"],
   },
   password: { type: String },
   googleId: { type: String },
@@ -62,6 +62,7 @@ const customerSchema = new Schema({
   accountType: { type: String, default: "email" },
   active: { type: Boolean, default: true },
   roles: { type: [], default: ["customer"] },
+  isDelete: { type: Boolean, default: false },
 });
 
 // Virtuals
