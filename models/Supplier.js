@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 // Mongoose Datatypes:
 // https://mongoosejs.com/docs/schematypes.html
 const supplierSchema = new Schema({
-  name: { type: String, required: [true, 'Supplier bắt buộc phải nhập'] },
+  name: { type: String, required: [true, "Supplier bắt buộc phải nhập"] },
   email: {
     type: String,
     required: true,
@@ -28,8 +28,9 @@ const supplierSchema = new Schema({
     },
   },
   address: { type: String, required: [true, `Address is required`] },
+  isDelete: { type: Boolean, default: false },
 });
 
-const Supplier = model('Supplier', supplierSchema);
+const Supplier = model("Supplier", supplierSchema);
 
 module.exports = Supplier;

@@ -58,6 +58,7 @@ const customerSchema = new Schema({
   accountType: { type: String, default: "email" },
   active: { type: Boolean, default: true },
   roles: { type: [], default: ["customer"] },
+  isDelete: { type: Boolean, default: false },
 });
 
 // Virtuals

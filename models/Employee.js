@@ -55,6 +55,7 @@ const employeeSchema = new Schema({
   },
   active: { type: Boolean, default: true },
   roles: { type: [], default: ["sales"] },
+  isDelete: { type: Boolean, default: false },
 });
 
 // Virtuals

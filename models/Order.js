@@ -119,6 +119,7 @@ const orderSchema = new Schema({
     required: false,
   },
   orderDetails: [orderDetailSchema],
+  isDelete: { type: Boolean, default: false },
 });
 // Virtual with Populate
 orderSchema.virtual("customer", {
