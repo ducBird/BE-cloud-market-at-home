@@ -24,7 +24,7 @@ const customerSchema = new Schema({
       message: `{VALUE} không phải là số điện thoại hợp lệ`,
     },
   },
-  address: { type: String, required: [true, "Địa chỉ bắt buộc phải nhập"] },
+  address: { type: String },
   email: {
     type: String,
     required: [true, "Email bắt buộc phải nhập"],
