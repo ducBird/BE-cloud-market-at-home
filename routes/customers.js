@@ -18,6 +18,7 @@ const jwtSettings = require("../constants/jwtSettings");
 
 //MONGODB
 const { findDocuments, findDocument } = require("../helpers/MongoDbHelper");
+const { FRONTLINE_URL } = require("../constants/URLS");
 
 //============================BEGIN MONGOOSE============================//
 
@@ -87,7 +88,7 @@ router.get("/login/success", (req, res) => {
 router.get("/logout", (req, res) => {
   // req.logout();
   res.clearCookie("session_google_account");
-  res.redirect("http://localhost:3000");
+  res.redirect(FRONTLINE_URL);
 });
 
 router.get(
@@ -98,7 +99,7 @@ router.get(
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    successRedirect: "http://localhost:3000/",
+    successRedirect: FRONTLINE_URL,
     failureRedirect: "/login/failed",
   })
 );
