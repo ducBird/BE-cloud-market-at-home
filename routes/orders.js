@@ -21,6 +21,7 @@ const passport = require("passport");
 router.get("/", function (req, res, next) {
   try {
     Order.find()
+      .sort({ createdDate: -1 })
       .populate("orderDetails.product")
       .populate("customer")
       .populate("employee")
